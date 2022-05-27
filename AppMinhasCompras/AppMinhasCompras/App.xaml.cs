@@ -1,15 +1,25 @@
-﻿using AppMinhasCompras.Helper;
+﻿
+/**
+ * 
+ */
+using AppMinhasCompras.Helper;
 using System;
 using System.IO;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace AppMinhasCompras
 {
     public partial class App : Application
     {
+        /**
+         * 
+         */ 
         static SQLiteDatabaseHelper database;
 
+
+        /**
+         * 
+         */ 
         public static SQLiteDatabaseHelper Database
         {
             get
@@ -32,6 +42,9 @@ namespace AppMinhasCompras
         {
             InitializeComponent();
 
+            /**
+             * 
+             */ 
             MainPage = new NavigationPage(new View.Listagem());
         }
 

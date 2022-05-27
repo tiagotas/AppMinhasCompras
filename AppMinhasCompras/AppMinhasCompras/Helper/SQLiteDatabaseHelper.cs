@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿/**
+ * 
+ */ 
 using AppMinhasCompras.Model;
 using SQLite;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AppMinhasCompras.Helper
 {
     /**
      * 
-     */ 
+     */
     public class SQLiteDatabaseHelper
     {
         /**

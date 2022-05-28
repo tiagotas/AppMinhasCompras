@@ -10,7 +10,7 @@ using AppMinhasCompras.Model;
 using SQLite;
 
 /**
- * Classes como List. Veja mina aula sobre em: https://www.youtube.com/watch?v=m8rR1aLjrg0
+ * Classes como List. Veja minha aula sobre em: https://www.youtube.com/watch?v=m8rR1aLjrg0
  */
 using System.Collections.Generic;
 

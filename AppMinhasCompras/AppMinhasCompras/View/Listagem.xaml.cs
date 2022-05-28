@@ -73,14 +73,27 @@ namespace AppMinhasCompras.View
 
 
         /**
-         * 
+         * Método executado quando a página é exibida ao usuário.
          */ 
         protected override void OnAppearing()
         {
-            if(lista_produtos.Count == 0)
+            /**
+             * Se a ObservableCollection estiver vazia é executado para obter todas as linhas do db3
+             */
+            if (lista_produtos.Count == 0)
             {
+                /**
+                 * Inicializando a Thread que irá buscar o array de objetos no arquivo db3
+                 * via classe SQLiteDatabaseHelper encapsulada na propriedade Database da
+                 * classe App.
+                 */ 
                 System.Threading.Tasks.Task.Run(async () =>
                 {
+                    /**
+                     * Retornando o array de objetos vindos do db3, foi usada uma variável tem do tipo
+                     * List para que abaixo no foreach possamos percorrer a lista temporária e add
+                     * os itens à ObservableCollection
+                     */
                     List<Produto> temp = await App.Database.GetAll();
 
                     foreach (Produto item in temp)
@@ -88,6 +101,9 @@ namespace AppMinhasCompras.View
                         lista_produtos.Add(item);
                     }
 
+                    /**
+                     * Após carregar os registros para a ObservableCollection removemos o loading da tela.
+                     */
                     ref_carregando.IsRefreshing = false;
                 });
             }                       
@@ -95,36 +111,61 @@ namespace AppMinhasCompras.View
 
 
         /**
-         * 
-         */ 
+         * Trata o evento Clicked do MenuItem da ViewCell.ContextActions perguntando ao usuário
+         * se ele realmente deseja remover aquele item do arquivo db3
+         */
         private async void MenuItem_Clicked(object sender, EventArgs e)
         {
+            /**
+             * Reconhecendo qual foi a linha do ListView que disparou o evento de exclusão.
+             */ 
             MenuItem disparador = (MenuItem)sender;
 
+
+            /**
+             * Obtendo qual foi o produto que estava anexado no BindingContext
+             */ 
             Produto produto_selecionado = (Produto)disparador.BindingContext;
 
+            /**
+             * Perguntando ao usuário se ele realmente deseja remover. Note o await para aguardar
+             * a resposta do usuário antes de prosseguir com o código.
+             */ 
             bool confirmacao = await DisplayAlert("Tem Certeza?", "Remover Item?", "Sim", "Não");
 
             if(confirmacao)
             {
+                /**
+                 * Removendo o registro do db3 via método Delete da SQLiteDatabaseHelper
+                 */ 
                 await App.Database.Delete(produto_selecionado.Id);
 
+                /**
+                 * Removendo o item da ObservableCollection também, que é automaticamente
+                 * removida da visão do usuário na ListView também.
+                 */
                 lista_produtos.Remove(produto_selecionado);
             }
         }
 
 
         /**
-         * 
+         * Trata o evento TextChanged da SearchBar recebendo os novos valores digitados
          */
         private void txt_busca_TextChanged(object sender, TextChangedEventArgs e)
         {
+            /**
+             * Obtendo o valor que foi digitado no Search
+             */ 
             string buscou = e.NewTextValue;
 
             System.Threading.Tasks.Task.Run(async () =>
             {
                 List<Produto> temp = await App.Database.Search(buscou);
 
+                /**
+                 * Limpando a ObservableCollection antes de add os itens vindos da busca.
+                 */
                 lista_produtos.Clear();
 
                 foreach (Produto item in temp)
@@ -138,10 +179,15 @@ namespace AppMinhasCompras.View
 
 
         /**
-         * 
+         * Trata o evento ItemSelected da ListView navegando para a página de detalhes.
          */
         private void lst_produtos_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
+            /**
+             * Forma contraída de definir o BindingContext da página EditarProduto como sendo o
+             * Produto que foi selecionado na ListView (item da ListView) e em seguida já
+             * redicionando na navegação.
+             */ 
             Navigation.PushAsync(new EditarProduto
             {
                 BindingContext = (Produto)e.SelectedItem

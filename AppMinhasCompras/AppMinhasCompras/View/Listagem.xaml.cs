@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -14,15 +12,36 @@ namespace AppMinhasCompras.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Listagem : ContentPage
     {
+        /**
+         * A ObservableCollection é uma classe que armazena um array de objetos do tipo de Produto.
+         * Utilizamos essa classe quando estamos apresentando um array de objetos ao usuário. Diferencial
+         * dessa classe é que toda vez que um item é add, removido ou modificado no array de objetos a interface
+         * gráfica também é atualizada. Assim as modificações feitas no array sempre estão na vista do usuário.
+         */
         ObservableCollection<Produto> lista_produtos = new ObservableCollection<Produto>();
 
+
+        /**
+         * 
+         */ 
         public Listagem()
         {
             InitializeComponent();
 
+            /**
+             * Referenciando que a a fonte itens (a serem mostrados ao usuário) a ListView é a ObservableCollection 
+             * definida acima. Fazendo essa definição no construtor estamos amarrando a fonte de dados da ListView assim
+             * que ela é criada.
+             */
             lst_produtos.ItemsSource = lista_produtos;
         }
 
+
+        /**
+         * Tratamento do evento de clique no ToolBarItem que fará a navegação da tela de listagem 
+         * até a leta de cadastro de novo produto. A navegação está envolvida em um try catch
+         * e se algum problema acontecer a mensação da exceção será mostrada ao usuário via DisplayAlert
+         */ 
         private void ToolbarItem_Clicked_Novo(object sender, EventArgs e)
         {
             try
@@ -35,8 +54,16 @@ namespace AppMinhasCompras.View
             }            
         }
 
+
+        /**
+         * Método que faz a soma dos itens da ObservableCollection, isto é,
+         * a soma do subtotal (preco x quantidade) de cada um dos itens do array de objetos
+         */
         private void ToolbarItem_Clicked_Somar(object sender, EventArgs e)
         {
+            /**
+             * Uso da LINQ do C# para fazer a soma de cada um dos itens do array de objetos.
+             */ 
             double soma = lista_produtos.Sum(i => i.Preco * i.Quantidade);
 
             string msg = "O total da compra é: " + soma;
@@ -44,6 +71,10 @@ namespace AppMinhasCompras.View
             DisplayAlert("Ops", msg, "OK");
         }
 
+
+        /**
+         * 
+         */ 
         protected override void OnAppearing()
         {
             if(lista_produtos.Count == 0)
@@ -62,6 +93,10 @@ namespace AppMinhasCompras.View
             }                       
         }
 
+
+        /**
+         * 
+         */ 
         private async void MenuItem_Clicked(object sender, EventArgs e)
         {
             MenuItem disparador = (MenuItem)sender;
@@ -78,6 +113,10 @@ namespace AppMinhasCompras.View
             }
         }
 
+
+        /**
+         * 
+         */
         private void txt_busca_TextChanged(object sender, TextChangedEventArgs e)
         {
             string buscou = e.NewTextValue;
@@ -97,6 +136,10 @@ namespace AppMinhasCompras.View
             });
         }
 
+
+        /**
+         * 
+         */
         private void lst_produtos_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             Navigation.PushAsync(new EditarProduto
